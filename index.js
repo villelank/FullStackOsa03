@@ -1,8 +1,15 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const morgan = require('morgan')
 
 app.use(bodyParser.json())
+
+app.use(morgan('tiny'))
+
+morgan.token('type', function (req, res) { return JSON.stringify(req.body)})
+
+app.use(morgan(':method :url :response-time :type'))
 
 let persons = [
   { name: 'Arto Hellas', 
@@ -88,8 +95,6 @@ app.post('/api/persons', (req, res) => {
   }
 
   persons = persons.concat(person)
-
-  console.log(person)
 
   res.json(person)
 })
