@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
+const cors = require('cors')
 
 app.use(bodyParser.json())
 
@@ -10,6 +11,8 @@ app.use(morgan('tiny'))
 morgan.token('type', function (req, res) { return JSON.stringify(req.body)})
 
 app.use(morgan(':method :url :response-time :type'))
+
+app.use(cors())
 
 let persons = [
   { name: 'Arto Hellas', 
@@ -82,9 +85,9 @@ app.post('/api/persons', (req, res) => {
 
   const samePerson = persons.find(person => person.name === body.name)
   if(samePerson) {
-    console.log('name must be unique')
+    console.log('name is missing')
     return res.status(400).json({
-      error: 'name must be unique'
+      error: 'name is missing'
     })
   }
 
@@ -99,7 +102,45 @@ app.post('/api/persons', (req, res) => {
   res.json(person)
 })
 
-const port = 3001
+/*
+app.post('/api/persons/:id', (req, res) => {
+  const body = req.body
+  const id = Number(req.params.id)
+  
+  if( !body.name ) {
+    console.log('name is missing')
+    return res.status(400).json({
+      error: 'name is missing'
+    })
+  }
+
+  if( !body.number ) {
+    console.log('number is missing')
+    return res.status(400).json({
+      error: 'number is missing'
+    })
+  }
+  const updatedPerson = {
+    name: body.name,
+    number: body.number,
+    id: id
+  }
+  const updatedPersons = [];
+   // loop through list to find and replace one item
+   persons.forEach(person => {
+      if (person.id === id) {
+         updatedPersons.push(updatedPerson);
+      } else {
+         updatedPersons.push(person);
+      }
+   });
+  
+  res.json(updatedPersons)
+
+})
+*/
+
+const PORT = process.env.PORT || 3001
 app.listen(port, () => {
   console.log(`Server running on ${port}`)
 })
