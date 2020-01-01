@@ -27,28 +27,27 @@ app.get('/api/persons', (req, res, next) => {
 app.get('/info', (req, res, next) => {
 
   Person.find()
-  .exec(function (err, results) {
-    if(err) throw err
+    .exec(function (err, results) {
+      if(err) throw err
 
-    listLength = results.length
-    console.log(listLength)
-    let info = `<p>Phonebook has info for ${listLength} people</p><p>${dateNow}</p>`
-    res.send(info)
-  })
+      listLength = results.length
+      console.log(listLength)
+      let info = `<p>Phonebook has info for ${listLength} people</p><p>${dateNow}</p>`
+      res.send(info)
+    })
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
-  
   Person.findById(req.params.id)
-  .then(person => {
-    if(person) { 
-      res.json(person.toJSON()) 
-    }
-    else {
-      res.status(404).end()
-    }
-  })
-  .catch(error => next(error))
+    .then(person => {
+      if(person) {
+        res.json(person.toJSON())
+      }
+      else {
+        res.status(404).end()
+      }
+    })
+    .catch(error => next(error))
   /*
   const id = Number(req.params.id)
   const person = persons.find(person => person.id === id)
@@ -69,7 +68,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
     .then(result => {
       res.status(204).end()
     })
-    .catch(error => next(error)) 
+    .catch(error => next(error))
 })
 /*
 const createNewId = () => {
@@ -110,10 +109,10 @@ app.post('/api/persons', (req, res, next) => {
   })
 
   person.save()
-  .then(savedPerson => {
-    res.json(savedPerson.toJSON())
-  })
-  .catch(error => next(error))
+    .then(savedPerson => {
+      res.json(savedPerson.toJSON())
+    })
+    .catch(error => next(error))
   //persons = persons.concat(person)
   //res.json(person)
 })
@@ -134,11 +133,11 @@ app.put('/api/persons/:id', (req, res, next) => {
     number: body.number
   }
 
-  Person.findByIdAndUpdate(req.params.id, updatedPerson, { new: true})
+  Person.findByIdAndUpdate(req.params.id, updatedPerson, { new: true })
     .then(result => {
       if(result) {
         res.json(result.toJSON())
-      } 
+      }
       else {
         res.status(404).end()
       }
@@ -147,24 +146,24 @@ app.put('/api/persons/:id', (req, res, next) => {
 
 })
 
-const unknownEndpoint = (request, response) => { 
-  response.status(404).send({ error: 'unknown endpoint' }) 
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
 }
 
 app.use(unknownEndpoint)
 
-const errorHandler = (error, request, response, next) => { 
-  console.error(error.message) 
-   
-  if (error.name === 'CastError' && error.kind == 'ObjectId') { 
-    return response.status(400).send({ error: 'malformatted id' }) 
-  }  else if (error.name === 'ValidationError') {
-      return response.status(400).json({ error: error.message })
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+  if (error.name === 'CastError' && error.kind === 'ObjectId') {
+    return response.status(400).send({ error: 'malformatted id' })
   }
-  next(error) 
-} 
-   
-app.use(errorHandler) 
+  else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
+  }
+  next(error)
+}
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {

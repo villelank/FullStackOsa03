@@ -12,10 +12,10 @@ const personNumber = process.argv[4]
 const url =
   `mongodb+srv://ville:${password}@fullstack-y3kc4.mongodb.net/puhelinluettelo?retryWrites=true&w=majority`
 
-mongoose.connect(url, { 
+mongoose.connect(url, {
   useNewUrlParser: true,
   useUnifiedTopology: true
- })
+})
 
 const personSchema = new mongoose.Schema({
   name: String,
@@ -28,7 +28,7 @@ if( process.argv[2] && process.argv.length<4) {
   console.log('phonebook:')
   Person.find({}).then(result => {
     result.forEach(person => {
-      console.log(person.name + " " + person.number)
+      console.log(person.name + ' ' + person.number)
     })
     mongoose.connection.close()
   })
@@ -37,9 +37,9 @@ if( process.argv[2] && process.argv.length<4) {
     name: personName,
     number: personNumber
   })
-  
+
   testPerson.save().then(response => {
-    console.log(`added ${personName} number ${personNumber} to phonebook`);
-    mongoose.connection.close();
+    console.log(`added ${personName} number ${personNumber} to phonebook`)
+    mongoose.connection.close()
   })
 }
